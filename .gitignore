@@ -1,0 +1,5 @@
+tools/
+shots/
+sheet*.png
+PROGRESS.md
+__pycache__/

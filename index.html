@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>הלילה של ה-67</title>
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Heebo:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<!-- in-game HUD -->
+<div id="hud" class="hidden">
+  <div id="cross"></div>
+  <div id="prompt" class="hidden"><span class="key">E</span><span id="promptText"></span><div id="holdBar"><i></i></div></div>
+  <div id="objective"></div>
+  <div id="battery" title="סוללה"><i></i></div>
+  <div id="subs"></div>
+</div>
+
+<!-- touch controls -->
+<div id="touch" class="hidden">
+  <div id="stick"><i></i></div>
+  <button id="tLight" class="tbtn">פנס</button>
+  <button id="tUse" class="tbtn">E</button>
+  <button id="tRun" class="tbtn">ריצה</button>
+  <button id="tPause" class="tbtn small">II</button>
+</div>
+
+<!-- full-screen overlays -->
+<div id="fade"></div>
+<div id="card" class="hidden"><div id="cardText"></div></div>
+
+<div id="warn" class="screen">
+  <div class="panel narrow">
+    <div class="warnTitle">משחק אימה</div>
+    <p>מומלץ לשחק עם אוזניות ובחושך.</p>
+    <p class="dim">המשחק כולל רגעים מבהילים ועלול להפחיד שחקנים צעירים.<br>אין בו דם או אלימות.</p>
+    <button id="warnOk" class="btn">הבנתי</button>
+  </div>
+</div>
+
+<div id="menu" class="screen hidden">
+  <div class="menuWrap">
+    <div class="over">שבט הנשיא · טיול חנוכה</div>
+    <h1 class="title">הלילה של ה־<span>67</span></h1>
+    <div class="menuBtns">
+      <button id="btnStart" class="btn big">התחל</button>
+      <button id="btnSettings" class="btn">הגדרות</button>
+    </div>
+    <div class="intens">
+      <span>עוצמה</span>
+      <button class="seg" data-int="0">רגילה</button>
+      <button class="seg" data-int="1">מפחיד באמת</button>
+    </div>
+    <div id="loadMsg" class="dim small">טוען…</div>
+    <div class="hint dim small">WASD תזוזה · עכבר מבט · Shift ריצה · F פנס · E פעולה · Esc תפריט</div>
+  </div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <div class="panel">
+    <h2 id="pauseTitle">הפסקה</h2>
+    <div class="row"><label>עוצמה</label>
+      <div><button class="seg" data-int="0">רגילה</button><button class="seg" data-int="1">מפחיד באמת</button></div></div>
+    <div class="row"><label for="sVol">עוצמת קול</label><input id="sVol" type="range" min="0" max="100"></div>
+    <div class="row"><label for="sSens">רגישות עכבר</label><input id="sSens" type="range" min="20" max="250"></div>
+    <div class="row"><label>איכות</label>
+      <div><button class="seg" data-q="0">נמוכה</button><button class="seg" data-q="1">גבוהה</button></div></div>
+    <div class="row"><label>כתוביות</label>
+      <div><button class="seg" data-sub="1">פועלות</button><button class="seg" data-sub="0">כבויות</button></div></div>
+    <div class="pauseBtns">
+      <button id="btnResume" class="btn big">המשך</button>
+      <button id="btnQuit" class="btn">חזרה לתפריט</button>
+    </div>
+  </div>
+</div>
+
+<div id="err" class="hidden"></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
