@@ -23,7 +23,7 @@
 <div id="hud" class="hidden">
   <div id="cross"></div>
   <div id="prompt" class="hidden"><span class="key">E</span><span id="promptText"></span><div id="holdBar"><i></i></div></div>
-  <div id="objective"></div>
+  <div id="objective"><small>משימה</small><span id="objText"></span><em id="objHint"></em></div>
   <div id="battery" title="סוללה"><i></i></div>
   <div id="subs"></div>
 </div>
@@ -65,6 +65,23 @@
     </div>
     <div id="loadMsg" class="dim small">טוען…</div>
     <div class="hint dim small">WASD תזוזה · עכבר מבט · Shift ריצה · F פנס · E פעולה · Esc תפריט</div>
+  </div>
+</div>
+
+<div id="howto" class="screen hidden">
+  <div class="panel">
+    <h2>לפני שיוצאים לשביל</h2>
+    <div class="howGrid">
+      <div><span class="key">W A S D</span><p>הליכה</p></div>
+      <div><span class="key">עכבר</span><p>להסתכל מסביב</p></div>
+      <div><span class="key">E</span><p>לקחת, להשתמש<br>(יש דברים שצריך להחזיק)</p></div>
+      <div><span class="key">F</span><p>להדליק ולכבות את הפנס</p></div>
+      <div><span class="key">Shift</span><p>לרוץ</p></div>
+      <div><span class="key">Esc</span><p>הפסקה</p></div>
+    </div>
+    <p class="howTxt">אתם יושבים עם גרעין וזיו ליד המדורה בטיול. <b>המשימה שלכם תמיד כתובה בפינה הימנית למעלה.</b> אם נתקעתם – חכו כמה שניות, ויופיע רמז מתחתיה.</p>
+    <p class="howTxt dim">הקשיבו לחברים: הם אומרים לכם מה לעשות. הפנס נחלש עם הזמן.</p>
+    <button id="howOk" class="btn big">הבנתי, מתחילים</button>
   </div>
 </div>
 

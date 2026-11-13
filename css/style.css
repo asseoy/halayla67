@@ -55,9 +55,18 @@ html,body{height:100%;background:#000;color:var(--bone);font-family:var(--ui);ov
   font-weight:600;font-size:15px;direction:ltr}
 #holdBar{position:absolute;right:0;left:0;bottom:-10px;height:2px;background:rgba(255,255,255,.15)}
 #holdBar i{display:block;height:100%;width:0;background:var(--bone);margin-inline-start:auto;margin-inline-end:0;float:right}
-#objective{position:absolute;top:22px;right:26px;font-size:15px;color:var(--dim);text-shadow:0 1px 5px #000;
-  opacity:0;transition:opacity 1.2s;max-width:46vw;text-align:right}
-#objective.show{opacity:.9}
+#objective{position:absolute;top:22px;right:26px;color:var(--bone);text-shadow:0 1px 6px #000;opacity:0;transition:opacity 1s;max-width:46vw;text-align:right;
+  border-right:2px solid var(--red);padding:2px 12px 4px 0;background:linear-gradient(to left,rgba(0,0,0,.45),rgba(0,0,0,0))}
+#objective.show{opacity:1}
+#objective small{display:block;font-size:12px;letter-spacing:2px;color:var(--red)}
+#objText{display:block;font-family:var(--serif);font-size:21px;font-weight:700}
+#objHint{display:block;font-style:normal;font-size:15px;color:var(--dim);margin-top:4px;opacity:0;transition:opacity 1s}
+#objHint.show{opacity:1}
+.howGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 16px}
+.howGrid div{border:1px solid #2a2724;padding:8px 10px;text-align:center}
+.howGrid p{margin:6px 0 0;font-size:15px;line-height:1.4}
+.howTxt{font-size:17px}
+.key{display:inline-block;border:1px solid #4a4540;padding:1px 8px;font-family:var(--ui);font-weight:600;font-size:14px}
 #battery{position:absolute;left:24px;bottom:24px;width:34px;height:13px;border:1px solid rgba(217,210,195,.4);opacity:.55;direction:ltr}
 #battery::after{content:'';position:absolute;right:-4px;top:3px;width:3px;height:5px;background:rgba(217,210,195,.4)}
 #battery i{display:block;height:100%;width:100%;background:rgba(217,210,195,.55);transition:width .6s}

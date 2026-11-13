@@ -24,6 +24,7 @@ export async function init() {
   $('loadMsg').textContent = '';
   $('btnSettings').onclick = () => { show('menu', false); show('pause', true); $('pauseTitle').textContent = 'הגדרות'; $('btnResume').textContent = 'חזרה'; U.settingsFromMenu = true; };
   $('btnStart').onclick = () => {
+    if (!U.howSeen) { show('menu', false); show('howto', true); $('howOk').onclick = () => { U.howSeen = true; show('howto', false); $('btnStart').onclick(); }; return; }
     G.audio && G.audio.start && G.audio.start();
     show('menu', false); show('hud', true); if (G.touch) show('touch', true);
     G.running = true; G.paused = false; lock();
@@ -50,7 +51,8 @@ export async function init() {
   };
   U.note = (text, dur = 3) => { if (!G.settings.subs) return; const box = $('subs'), ln = document.createElement('span'); ln.className = 'ln note'; ln.textContent = text; box.appendChild(ln); setTimeout(() => ln.remove(), dur * 1000); };
   U.clearSubs = () => { $('subs').innerHTML = ''; };
-  U.objective = text => { const o = $('objective'); if (!text) { o.classList.remove('show'); return; } o.textContent = text; o.classList.add('show'); };
+  U.objective = text => { const o = $('objective'); $('objHint').classList.remove('show'); if (!text) { o.classList.remove('show'); return; } $('objText').textContent = text; o.classList.add('show'); };
+  U.hint = text => { const h = $('objHint'); if (!text) { h.classList.remove('show'); return; } h.textContent = text; h.classList.add('show'); };
   /** interaction prompt; hold = progress 0..1 or null */
   U.prompt = (text, hold = null) => { const p = $('prompt'); if (!text) { p.classList.add('hidden'); return; } p.classList.remove('hidden'); $('promptText').textContent = text;
     $('holdBar').style.display = hold === null ? 'none' : 'block'; if (hold !== null) $('holdBar').firstElementChild.style.width = (hold * 100) + '%'; };

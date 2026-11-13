@@ -28,6 +28,8 @@ export async function init() {
     await wait(d + (opts.gap ?? 0.35));
   }
   const setBeat = n => { S.beat = n; };
+  // objective + a hint that appears only if you are still on it after a while
+  const goal = (text, hint, after = 20) => { U().objective(text); S.hint = hint; S.hintAt = G.time + after; S.hintShown = false; };
 
   async function script() {
     const p = P(), f = F(), ppl = PP(), c = camp(), a = A(), u = U();
@@ -55,12 +57,12 @@ export async function init() {
     await say('g', 'g_pee', 'יאללה, מי בא להשתין?');
     await say('z', 'z_ok', 'סבבה. אבל אתה מחזיק את הפנס.', { gap: 0.2 });
     // take the torch
-    u.objective('לקחת את הפנס');
+    goal('לקחת את הפנס שליד המדורה', 'הפנס מונח על האדמה ליד המדורה. הסתכלו עליו ולחצו E.', 10);
     p.lookAt(c.torch.pos.clone(), 0.35);
     await until(() => { const near = dist(c.torch.pos.x, c.torch.pos.z) < 2.4; u.prompt(near ? 'לקחת את הפנס' : null); return near && input.usePressed; });
     u.prompt(null); c.torch.take(); f.has = true; f.on = true; p.lookAt(null); p.sitting = false; p.canMove = true; a.sting && 0;
     ppl.g.sit(false); ppl.z.sit(false); await wait(0.6);
-    u.objective('ללכת עם החברים אל מאחורי הגבעה');
+    goal('ללכת אחרי גרעין וזיו בשביל, אל מאחורי הגבעה', 'לכו בשביל אחרי החברים עם W. אם חשוך – F מדליק את הפנס. Shift לרוץ.', 25);
 
     // ---------- 1. the walk ----------
     setBeat(1);
@@ -85,7 +87,7 @@ export async function init() {
     }
     // they turn away to give you privacy
     ppl.g.walk([[4.6, -63.2]], 1.2); ppl.z.walk([[5.4, -68.2]], 1.2);
-    u.objective('להשתין מאחורי השיח');
+    goal('ללכת אל השיח בסוף השביל ולהשתין', 'השיח הגדול נמצא בסוף השביל, ליד החברים. עמדו לידו והחזיקו E.', 15);
 
     // ---------- 2. the moment ----------
     setBeat(2);
@@ -113,7 +115,7 @@ export async function init() {
     f.flicker(1.6, 0.9); G.fear.spike(0.25);
     await say('z', 'z_joke', 'הוא סתם צוחק עלינו. גרעין! זה לא מצחיק!');
     c.fire.set(0); c.setTentLights(false); c.phone.setOn(false); W().tribe.showScarf(true); W().tribe.scrawl();   // back at camp, unseen: the fire dies, the lanterns and the phone go out
-    u.objective('למצוא את גרעין');
+    goal('לחפש את גרעין בשביל חזרה', 'לכו בשביל חזרה לכיוון המחנה והאירו על האדמה עם הפנס.', 20);
     // the sandal lies on the path back
     const sq = pathPoint(PATH_LEN - 14, 0.6); c.sandal.obj.visible = true; c.sandal.obj.position.set(sq.x, heightAt(sq.x, sq.z) + 0.02, sq.z); c.sandal.obj.rotation.y = 0.8;
     // ziv follows you; your footsteps get an echo that stops when you stop
@@ -132,7 +134,7 @@ export async function init() {
     await say('x', 'g_mimic_src', 'יאללה, בואו. אני מחכה פה.', { at: mpos, mimic: true, rate: 0.82, gap: 0.6 });
     G.fear.spike(0.5); f.flicker(2.2, 1); a.whisper(mpos, 2.6, 0.45);
     await wait(2.8);
-    u.objective('לחזור למחנה');
+    goal('לחזור למחנה, בשביל, לכיוון המדורה', 'המחנה נמצא בתחילת השביל – מאיפה שבאתם. לכו בשביל עד הסוף.', 25);
 
     // a glimpse on the way back (strong mode): between the trees, gone when you look again
     if (hard()) { await until(() => pathS(P().pos.x, P().pos.z) < PATH_LEN - 32);
@@ -161,7 +163,7 @@ export async function init() {
     await say('z', 'z_run', 'רוץ! אל תסתכל אחורה!', { at: far, gain: 1.6, gap: 0.6 });
     await say('z', 'z_scream', 'לא! לא!', { at: far, gain: 1.8, gap: 0 });
     S.tune && S.tune.stop(0.1); S.tune = null;
-    G.fear.setBase(0.5); u.objective('לברוח');
+    G.fear.setBase(0.5); goal('לברוח! לרוץ ולא להסתכל אחורה', 'החזיקו Shift ו־W כדי לרוץ.', 6);
     await wait(L(5));
     // the final scare: when you turn around, it is right there
     const before = P().yaw, t0 = G.time;
@@ -183,8 +185,9 @@ export async function init() {
 
   S.start = () => { if (!S.compiled) { S.compiled = true; const th = G.people.thing; th.obj.visible = true; G.renderer.compile(G.scene, G.camera); th.obj.visible = false; }
     S.reset(); S.lastT = G.time; script().catch(e => { if (e !== 'reset') console.error(e); }); };
-  S.reset = () => { run++; waits.splice(0).forEach(w => w.rej('reset')); S.echo = false; S.zFollow = false; S.tune && S.tune.stop(); S.tune = null; G.ui && (G.ui.prompt(null), G.ui.objective('')); };
+  S.reset = () => { run++; waits.splice(0).forEach(w => w.rej('reset')); S.echo = false; S.zFollow = false; S.tune && S.tune.stop(); S.tune = null; S.hint = null; G.ui && (G.ui.prompt(null), G.ui.objective('')); };
   S.update = dt => {
+    if (S.hint && !S.hintShown && G.time > S.hintAt && G.ui && document.getElementById('objective').classList.contains('show')) { S.hintShown = true; G.ui.hint(S.hint); }
     S.lastT = S.lastT || G.time;
     for (let i = waits.length - 1; i >= 0; i--) { const w = waits[i]; if (w.id !== run) { waits.splice(i, 1); continue; }
       if (w.fn ? w.fn() : G.time >= w.t) { waits.splice(i, 1); w.res(); } }
