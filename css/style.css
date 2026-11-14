@@ -101,3 +101,16 @@ html,body{height:100%;background:#000;color:var(--bone);font-family:var(--ui);ov
 @media (max-width:700px){ .hint{display:none} #objective{font-size:13px;max-width:70vw} }
 
 #cardText .cardLogo{display:block;width:clamp(56px,7vw,84px);margin:0 auto 22px;opacity:.38;filter:grayscale(.4) brightness(.8)}
+
+/* small screens: panels must never push their buttons off-screen (landscape phones), and the HUD must not sit under the touch buttons */
+.screen{align-items:flex-start;overflow-y:auto;touch-action:pan-y}
+.screen>.panel,.screen>.menuWrap{margin:auto}
+@media (max-height:500px){
+  .panel{padding:14px 22px 12px;width:min(720px,94vw)} .panel h2{font-size:22px;margin-bottom:8px}
+  .howGrid{margin:0 0 8px;gap:6px} .howGrid div{padding:4px 6px} .howGrid p{font-size:13px;margin-top:3px}
+  .panel p,.howTxt{font-size:15px;line-height:1.45;margin-bottom:6px} .panel p.dim{margin-bottom:10px}
+  .row{margin-bottom:8px} .pauseBtns{margin-top:12px}
+}
+body.touch #objective{right:64px}
+@media (orientation:portrait){ body.touch #subs{bottom:calc(12vh + 150px)} }
+@media (orientation:landscape){ body.touch #subs{width:calc(100vw - 12vw - 300px)} }

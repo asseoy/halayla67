@@ -166,7 +166,7 @@ function buildFlag(C) {
   addCollider(x, z, 0.15);
   C.flagUpdate = t => {
     const p = fg.attributes.position;
-    for (let i = 0; i < p.count; i++) { const bx = base[i * 3], by = base[i * 3 + 1], u = (bx + 0.5); const w = G.world ? G.world.wind : 0.5;
+    for (let i = 0; i < p.count; i++) { const bx = base[i * 3], by = base[i * 3 + 1], u = (bx + 0.5); const w = G.audio && typeof G.audio.wind === 'number' ? Math.min(1, G.audio.wind) : 0.5;
       p.setZ(i, Math.sin(u * 5 - t * (2 + w * 3) + by * 2) * 0.09 * u * (0.4 + w)); p.setY(i, by - u * u * 0.16 * (1 - w * 0.7)); }
     p.needsUpdate = true;
   };

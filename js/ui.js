@@ -34,6 +34,7 @@ export async function init() {
   $('btnQuit').onclick = () => { U.toMenu(); };
   U.pause = v => {
     if (!G.running) return; G.paused = v; show('pause', v); $('pauseTitle').textContent = 'הפסקה'; $('btnResume').textContent = 'המשך';
+    G.audio && G.audio.setPaused && G.audio.setPaused(v);
     if (v) { unlock(); } else { lock(); }
   };
   U.toMenu = () => { G.running = false; G.paused = false; unlock(); show('pause', false); show('hud', false); show('touch', false); show('menu', true); U.card(''); G.story && G.story.reset && G.story.reset(); U.fadeTo = 1; };

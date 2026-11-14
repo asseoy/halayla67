@@ -35,9 +35,9 @@ export async function init() {
     const p = P(), f = F(), ppl = PP(), c = camp(), a = A(), u = U();
     // ---------- 0. by the fire ----------
     setBeat(0);
-    c.fire.set(0.8, true); c.setTentLights(true); a.crickets = true; a.wind = 0.45; a.drone = 0; G.fear.setBase(0); G.fear.value = 0;
+    c.fire.set(0.8, true); c.setTentLights(true); a.crickets = true; a.wind = 0.45; a.drone = 0; G.fear.setBase(0); G.fear.value = G.fear.target = 0; p.shake = p.kick = 0; G.post && (G.post.black = 0);
     W().sky.setCover(null); W().sky.darkTarget = 0;
-    f.has = false; f.on = false; f.battery = 1; c.torch.reset(); W().tribe.reset(); S.sawScarf = S.sawRock = false; c.sandal.obj.visible = false; c.phone.setOn(true);
+    f.has = false; f.on = false; f.battery = 1; f.dead = false; f.blackout = 0; f.flickerT = 0; c.torch.reset(); W().tribe.reset(); S.sawScarf = S.sawRock = false; c.sandal.obj.visible = false; c.phone.setOn(true);
     const seat = c.seats[0]; p.setPose(seat[0], seat[1] + 0.25, p.yawTo ? Math.atan2(-(0 - seat[0]), -(0 - seat[1])) : Math.PI, -0.12);
     p.sitting = true; p.canMove = false; p.canLook = true; p.lookAt(null);
     ppl.g.show(true); ppl.z.show(true); ppl.thing.hide();
@@ -69,20 +69,20 @@ export async function init() {
     const lane = (side, s0, s1, n = 7) => { const pts = []; for (let i = 0; i <= n; i++) { const q = pathPoint(s0 + (s1 - s0) * i / n, side); pts.push([q.x, q.z]); } return pts; };
     // they walk ahead, but wait for you if you lag behind
     let legend = false, legend2 = false, ahead = false;
-    let sG = 0, sZ = 0; const goal = PATH_LEN - 3.5;
+    let sG = 0, sZ = 0; const endS = PATH_LEN - 3.5;
     S.leg = true;
     while (true) {
       const ps = pathS(p.pos.x, p.pos.z);
-      const lead = Math.min(goal, ps + 4.5);
+      const lead = Math.min(endS, ps + 4.5);
       if (lead > sG + 2) { sG = lead; ppl.g.walk(lane(-0.7, pathS(ppl.g.position.x, ppl.g.position.z), sG, 3), 1.3); }
       if (lead - 1.2 > sZ + 2) { sZ = lead - 1.2; ppl.z.walk(lane(0.8, pathS(ppl.z.position.x, ppl.z.position.z), sZ, 3), 1.25); }
       if (S.tune && ps > 14) { S.tune.stop(1.2); S.tune = null; }
       a.wind = 0.45 + clamp(ps / PATH_LEN, 0, 1) * 0.5;
       if (!legend && ps > 16) { legend = true; ppl.g.lookAt('cam'); await say('g', 'g_legend', 'שמעתם על הילד שהלך לאיבוד בטיול של שישים ושבע? אומרים שהוא עדיין פה.'); await say('z', 'z_legend', 'די, אחי. אל תתחיל עם השטויות שלך.'); ppl.g.lookAt(null); }
-      if (legend && !ahead && ps > 34) { ahead = true; sG = Math.min(goal, ps + 12); ppl.g.walk(lane(-0.4, pathS(ppl.g.position.x, ppl.g.position.z), sG, 4), 2.6);
+      if (legend && !ahead && ps > 34) { ahead = true; sG = Math.min(endS, ps + 12); ppl.g.walk(lane(-0.4, pathS(ppl.g.position.x, ppl.g.position.z), sG, 4), 2.6);
         await wait(2.2); ppl.g.lookAt('cam'); await say('g', 'g_mimic_src', 'יאללה, בואו. אני מחכה פה.'); }
       if (!legend2 && ps > 46) { legend2 = true; ppl.g.lookAt(V(-14, -48, 2)); await say('g', 'g_shh', 'שקט. אתם שומעים את זה?', { gap: 0.1 }); a.snapAt(V(-15, -47, 1)); G.fear.spike(0.25); await wait(1.4); ppl.g.lookAt(null); }
-      if (ps > goal - 1) break;
+      if (ps > endS - 1) break;
       await wait(0.25);
     }
     // they turn away to give you privacy
@@ -147,7 +147,7 @@ export async function init() {
     S.zFollow = false; a.drone = 0.8;
     ppl.z.walk([[1.5, 4]], 1.3);
     await say('z', 'z_camp', 'למה הכל חשוך? איפה כולם?');
-    c.phone.setOn(true); S.tune = a.phoneTune(c.phone.pos); setTimeout(() => { S.tune && S.tune.warp(); c.phone.setOn(false); }, 2600);
+    c.phone.setOn(true); S.tune = a.phoneTune(c.phone.pos); { const r = run; setTimeout(() => { if (r !== run) return; S.tune && S.tune.warp(); c.phone.setOn(false); }, 2600); }
     u.objective('');
     await wait(L(4));
     // the silhouette between the tents, at the edge of the light
@@ -198,7 +198,7 @@ export async function init() {
     // ziv sticks close behind you after גרעין is gone
     const z = G.people.z;
     if (S.zFollow && z.visible) { const p = G.player, back = new THREE.Vector3(0.9, 0, 1.6).applyAxisAngle(new THREE.Vector3(0, 1, 0), p.yaw).add(p.pos);
-      if (Math.hypot(z.position.x - back.x, z.position.z - back.z) > 1.2 && z.arrived()) z.walk([[back.x, back.z]], p.running ? 4 : 1.6); z.lookAt('cam'); }
+      if (Math.hypot(z.position.x - back.x, z.position.z - back.z) > 1.2 && (z.arrived() || G.time - (S.zWalkT || 0) > 2)) { z.walk([[back.x, back.z]], p.running ? 4 : 1.6); S.zWalkT = G.time; } z.lookAt('cam'); }
   };
   // the echo: footsteps a few metres behind you, half a beat late; they stop when you stop
   G.player.onStep = (runFlag) => { G.audio && G.audio.step(runFlag);

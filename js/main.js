@@ -71,7 +71,7 @@ function step(raw) {
     G.fear && G.fear.update(dt);
     G.world && G.world.update(dt);
     G.audio && G.audio.update(dt);
-  } else if (G.menuTick) G.menuTick(raw);
+  } else if (!G.running && G.menuTick) G.menuTick(raw);
   G.ui && G.ui.update(raw);
   endFrameInput();
   if (G.post) G.post.render(raw); else G.renderer.render(G.scene, G.camera);

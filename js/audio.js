@@ -38,6 +38,8 @@ async function init() {
     if (C.state === 'suspended') C.resume();
     A.setVolume(G.settings.volume);
   };
+  /** freeze all sound while the pause menu is open */
+  A.setPaused = v => { if (!C) return; try { (v ? C.suspend() : C.resume()).catch(() => {}); } catch (e) {} };
   A.setVolume = v => { if (A.master) A.master.gain.value = (v / 100) * 0.9; };
   A.update = update;
 }
@@ -121,7 +123,7 @@ A.pee = (pos, dur) => { if (!A.ready) return; const t = C.currentTime, s = C.cre
   s.connect(fl).connect(g).connect(panner(pos, 1)).connect(A.master); s.start(t); s.stop(t + dur + 0.1); };
 
 // ---------- voices ----------
-const VOICE_FILES = ['g_hi', 'z_hi', 'g_pee', 'z_ok', 'g_legend', 'z_legend', 'g_shh', 'z_turn', 'z_joke', 'z_where', 'z_call', 'g_far', 'z_run', 'g_mimic_src', 'z_scream', 'g_tune', 'z_camp'];
+const VOICE_FILES = ['g_hi', 'z_hi', 'g_pee', 'z_ok', 'g_legend', 'z_legend', 'g_shh', 'z_turn', 'z_joke', 'z_where', 'z_call', 'z_run', 'g_mimic_src', 'z_scream', 'g_tune', 'z_camp'];
 async function loadVoices() {
   await Promise.all(VOICE_FILES.map(async n => { try { const r = await fetch(`assets/voice/${n}.mp3`); if (!r.ok) return; A.buffers[n] = await C.decodeAudioData(await r.arrayBuffer()); } catch (e) {} }));
 }
